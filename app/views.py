@@ -14,17 +14,13 @@ from flask.ext.wtf import Form
 from wtforms.fields import TextField # other fields include PasswordField 
 from wtforms.validators import Required, Email
 from app.models import Myprofile
-from app.forms import LoginForm
+from app.forms import LoginForm,ProfileForm
 
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, oid
 from app import oid, lm
 
-class ProfileForm(Form):
-     first_name = TextField('First Name', validators=[Required()])
-     last_name = TextField('Last Name', validators=[Required()])
-     # evil, don't do this
-     image = TextField('Image', validators=[Required(), Email()])
+
 
 
 @app.before_request
@@ -58,15 +54,17 @@ def profile_add():
     if request.method == 'POST':
         first_name = request.form['first_name']
         last_name = request.form['last_name']
-
+        age=request.form['age']
+        image=request.form['image']
+        sex=request.form['sex']
         # write the information to the database
         newprofile = Myprofile(first_name=first_name,
-                               last_name=last_name)
+                               last_name=last_name,age=age,image=image,sex=sex)
         db.session.add(newprofile)
         db.session.commit()
 
         return "{} {} was added to the database".format(request.form['first_name'],
-                                             request.form['last_name'])
+                                             request.form['last_name'],request.form['age'],request.form['image'],request.form['sex'])
 
     form = ProfileForm()
     return render_template('profile_add.html',
@@ -80,8 +78,8 @@ def profile_list():
     return render_template('profile_list.html',
                             profiles=profiles)
 
-@app.route('/profile/<int:id>')
-def profile_view(id):
+@app.route('/profile/<int:userid>')
+def profile_view(userid):
     profile = Myprofile.query.get(id)
     return render_template('profile_view.html',profile=profile)
 
