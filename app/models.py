@@ -1,6 +1,6 @@
 from . import db  
 class Myprofile(db.Model):   
-    __tablename__='Profile'
+    __tablename__='profile'
     id = db.Column(db.Integer, primary_key=True)
     username=db.Column(db.String(80))
     first_name = db.Column(db.String(80))     

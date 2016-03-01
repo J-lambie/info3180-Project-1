@@ -21,6 +21,8 @@
             float:left;
             margin-top:20px;
             margin-left:20px;
+            width:200px;
+            height:200px;
         }
         #date{
             margin-top:50px;
@@ -34,6 +36,7 @@
             margin-left:20px;
             margin-top:20px;
         }
+        
     </style>
     {% endblock %}
 
@@ -45,18 +48,18 @@
 <body>
 <div id="master">
     <div id="profile-pic">
-        <img src="static/img/"{{profile.imagename}}></img>
+        <img src="/static/img/{{profile.image}}"></img>
     </div>
     <div id="profile">
         <div id="name">
-            {{profile.first_name}}{{profile.last_name}}
+            {{profile.first_name}} {{profile.last_name}}
         </div>
         <div id="date">
-            Today is: {{time}}
+            Today is: {{times}}
         </div>
         <div id="info">
-            Username:{{profile.username}}<br>
-            ID: {{profile.userid}}<br>
+            Username: {{profile.username}}<br>
+            ID: {{profile.id}}<br>
             Sex: {{profile.sex}}<br>
             Age: {{profile.age}}<br>
         </div>

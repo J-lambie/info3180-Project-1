@@ -7,7 +7,7 @@ This file creates your application.
 """
 import os,time
 from flask import render_template, request, redirect, url_for,jsonify,g,session
-from app import db
+from app import db,app
 
 from flask.ext.wtf import Form 
 from wtforms.fields import TextField # other fields include PasswordField 
@@ -15,9 +15,7 @@ from wtforms.validators import Required, Email
 from app.models import Myprofile
 from app.forms import ProfileForm
 
-from flask.ext.login import login_user, logout_user, current_user, login_required
-from app import app, db, lm, oid
-from app import oid, lm
+
 
 
 def request_wants_json():
@@ -27,10 +25,7 @@ def request_wants_json():
         request.accept_mimetypes[best] > \
         request.accept_mimetypes['text/html']
 
-@app.before_request
-def before_request():
-    g.user = current_user
-    db.create_all()
+
     
 ###
 # Routing for your application.
@@ -77,13 +72,14 @@ def profile_list():
     return render_template('profile_list.html',
                             profiles=profiles)
 
-@app.route('/profile/<int:userid>')
-def profile_view(userid):
+@app.route('/profile/<int:id>')
+def profile_view(id):
     times=time.strftime("%a, %d %b  %Y")
     profile = Myprofile.query.get(id)
     if request_wants_json():
-        return jsonify(profile.userid,profile.username,profile.age,profile.sex)
-    return render_template('profile_view.html',profile=profile,time=times)
+        return jsonify(profile.id,profile.username,profile.age,profile.sex)
+    
+    return render_template('profile_view.html',profile=profile,times=times)
 
 
 @app.route('/about/')
