@@ -1,13 +1,66 @@
 {% extends "base.html" %}
 
 
-{% block js %}
-{% endblock %}
+    {% block css %}
+    <style type="text/css">
+        div div div div{
+             border: 1px solid black;
+             background-color: #3399CC;
+             max-width:500px;
+             min-width:200px;
+             padding:5px;
+             
+        }
+        #profile{
+            display:inline-block;
+            margin-left: 100px;
+            margin-top:20px;
+            
+        }
+        img{
+            float:left;
+            margin-top:20px;
+            margin-left:20px;
+        }
+        #date{
+            margin-top:50px;
+            margin-bottom:5px;
+        }
+        #master{
+            border: 1px solid black;
+            
+            max-width:800px;
+            min-height:300px;
+            margin-left:20px;
+            margin-top:20px;
+        }
+    </style>
+    {% endblock %}
+
+    {% block js %}
+    {% endblock %}
 
 
 {% block main %}
-
-{{profile.first_name}}
-{{profile.last_name}}
-
+<body>
+<div id="master">
+    <div id="profile-pic">
+        <img src="static/img/"{{profile.imagename}}></img>
+    </div>
+    <div id="profile">
+        <div id="name">
+            {{profile.first_name}}{{profile.last_name}}
+        </div>
+        <div id="date">
+            Today is: {{time}}
+        </div>
+        <div id="info">
+            Username:{{profile.username}}<br>
+            ID: {{profile.userid}}<br>
+            Sex: {{profile.sex}}<br>
+            Age: {{profile.age}}<br>
+        </div>
+    </div>
+</div>
+</body>
 {% endblock %}

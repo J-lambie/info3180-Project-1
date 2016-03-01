@@ -1,12 +1,11 @@
 """
 Flask Documentation:     http://flask.pocoo.org/docs/
 Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
-Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
+Werkzeug Documentation:  http://wecrerkzeug.pocoo.org/documentation/
 
 This file creates your application.
 """
-
-from app import app
+import os,time
 from flask import render_template, request, redirect, url_for,jsonify,g,session
 from app import db
 
@@ -14,7 +13,7 @@ from flask.ext.wtf import Form
 from wtforms.fields import TextField # other fields include PasswordField 
 from wtforms.validators import Required, Email
 from app.models import Myprofile
-from app.forms import LoginForm,ProfileForm
+from app.forms import ProfileForm
 
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, oid
@@ -26,24 +25,12 @@ from app import oid, lm
 @app.before_request
 def before_request():
     g.user = current_user
+    db.create_all()
     
 ###
 # Routing for your application.
 ###
-@app.route('/login', methods=['GET', 'POST'])
-@oid.loginhandler
-def login():
-    if g.user is not None and g.user.is_authenticated():
-        return redirect(url_for('index'))
-    form = LoginForm()
-    print app.config['OPENID_PROVIDERS']
-    if form.validate_on_submit():
-        session['remember_me'] = form.remember_me.data
-        return oid.try_login(form.openid.data, ask_for=['nickname', 'email'])
-    return render_template('login.html', 
-                           title='Sign In',
-                           form=form,
-                           providers=app.config['OPENID_PROVIDERS'])
+
 @app.route('/')
 def home():
     """Render website's home page."""
@@ -55,16 +42,21 @@ def profile_add():
         first_name = request.form['first_name']
         last_name = request.form['last_name']
         age=request.form['age']
-        image=request.form['image']
+        image=request.files['image']
         sex=request.form['sex']
+        imagename = image.filename
+        image.save(os.path.join("app/static/img/", imagename))
         # write the information to the database
         newprofile = Myprofile(first_name=first_name,
-                               last_name=last_name,age=age,image=image,sex=sex)
+                               last_name=last_name,
+                               age=age,
+                               sex=sex,
+                               image=imagename)
         db.session.add(newprofile)
         db.session.commit()
 
         return "{} {} was added to the database".format(request.form['first_name'],
-                                             request.form['last_name'],request.form['age'],request.form['image'],request.form['sex'])
+                                             request.form['last_name'])
 
     form = ProfileForm()
     return render_template('profile_add.html',
@@ -80,8 +72,9 @@ def profile_list():
 
 @app.route('/profile/<int:userid>')
 def profile_view(userid):
+    times=time.strftime("%a, %d %b  %Y")
     profile = Myprofile.query.get(id)
-    return render_template('profile_view.html',profile=profile)
+    return render_template('profile_view.html',profile=profile,time=times)
 
 
 @app.route('/about/')

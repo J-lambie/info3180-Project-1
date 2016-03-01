@@ -6,14 +6,17 @@
 
 
 {% block main %}
-<form action="{{ url_for('profile_add') }}" method="post">
+<div class='container'>
+       <h1>Add Profile</h1>
+<form action="{{ url_for('profile_add') }}" method="post" enctype="multipart/form-data" class="form-group">
 
-       first name: {{ form.first_name }}<br />
-       last_name: {{ form.last_name }}<br />
-       age: <input type="int" name="age"><br  />
-       Sex: <select><option>Female</option><option>Male</option></select> <br />
-       Profile Img: <input type="file" name="image"><br />
+       <label for="first_name">First name:</label> {{ form.first_name }}<br />
+       <label for="last_name">Last_name:</label> {{ form.last_name }}<br />
+       <label for="age">Age: </label><input type="int" name="age"><br  />
+       <label for="sex">Sex:</label><select><option>Female</option><option>Male</option></select> <br />
+       <label for="image">Profile Img: </label><input type="file" name="image"><br />
        <input type="submit" />                
 
-</form> 
+</form>
+</div>
 {% endblock %}
