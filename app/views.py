@@ -20,7 +20,12 @@ from app import app, db, lm, oid
 from app import oid, lm
 
 
-
+def request_wants_json():
+    best = request.accept_mimetypes \
+        .best_match(['application/json', 'text/html'])
+    return best == 'application/json' and \
+        request.accept_mimetypes[best] > \
+        request.accept_mimetypes['text/html']
 
 @app.before_request
 def before_request():
@@ -54,10 +59,10 @@ def profile_add():
                                image=imagename)
         db.session.add(newprofile)
         db.session.commit()
-
+    
         return "{} {} was added to the database".format(request.form['first_name'],
                                              request.form['last_name'])
-
+    
     form = ProfileForm()
     return render_template('profile_add.html',
                            form=form)
@@ -65,8 +70,8 @@ def profile_add():
 @app.route('/profiles/',methods=["POST","GET"])
 def profile_list():
     profiles = Myprofile.query.all()
-    if request.method == "POST":
-        return jsonify({"age":4, "name":"John"})
+    if request_wants_json():
+        return jsonify(profiles=[x.to_json() for x in profiles])
     return render_template('profile_list.html',
                             profiles=profiles)
 
@@ -74,6 +79,8 @@ def profile_list():
 def profile_view(userid):
     times=time.strftime("%a, %d %b  %Y")
     profile = Myprofile.query.get(id)
+    if request_wants_json():
+        return jsonify(profile.userid,profile.username,profile.age,profile.sex)
     return render_template('profile_view.html',profile=profile,time=times)
 
 
@@ -95,6 +102,7 @@ def send_text_file(file_name):
 
 
 @app.after_request
+
 def add_header(response):
     """
     Add headers to both force latest IE rendering engine or Chrome Frame,
