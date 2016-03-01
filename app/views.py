@@ -44,6 +44,7 @@ def home():
 @app.route('/profile/', methods=['POST','GET'])
 def profile_add():
     if request.method == 'POST':
+        username = request.form['username']
         first_name = request.form['first_name']
         last_name = request.form['last_name']
         age=request.form['age']
@@ -52,7 +53,8 @@ def profile_add():
         imagename = image.filename
         image.save(os.path.join("app/static/img/", imagename))
         # write the information to the database
-        newprofile = Myprofile(first_name=first_name,
+        newprofile = Myprofile(username=username,
+                               first_name=first_name,
                                last_name=last_name,
                                age=age,
                                sex=sex,
@@ -62,7 +64,7 @@ def profile_add():
     
         return "{} {} was added to the database".format(request.form['first_name'],
                                              request.form['last_name'])
-    
+        
     form = ProfileForm()
     return render_template('profile_add.html',
                            form=form)

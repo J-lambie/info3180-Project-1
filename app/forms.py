@@ -10,5 +10,5 @@ class ProfileForm(Form):
     first_name = TextField('First Name', validators=[Required()])
     last_name = TextField('Last Name', validators=[Required()])
     age=IntegerField('age',validators=[Required()])
-    image        = TextField(u'Image File', validators=[Required()])
-    sex= SelectField(u'Sex', choices=['female','male'],validators=[Required()])
+    image= FileField('Image File', validators=[Required()])
+    sex= SelectField('Sex', choices=[('Female','female'),('Male','male')],validators=[Required()])
